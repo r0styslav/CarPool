@@ -31,7 +31,7 @@ public class User {
     @Column(name = "password")
     @NotEmpty(message = "*Please provide your password")
     private String password;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Car> car;
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(

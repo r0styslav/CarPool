@@ -1,10 +1,12 @@
 package com.symphonysolutions.config;
 
-//@Configuration
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
 //@EnableWebSecurity
 public class SecurityConfig {
 //public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//
+
 //    @Autowired
 //    private BCryptPasswordEncoder bCryptPasswordEncoder;
 //
@@ -16,7 +18,7 @@ public class SecurityConfig {
 //
 //    @Value("${spring.queries.roles-query}")
 //    private String rolesQuery;
-
+//
 //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        auth.
@@ -26,7 +28,7 @@ public class SecurityConfig {
 //                .dataSource(dataSource)
 //                .passwordEncoder(bCryptPasswordEncoder);
 //    }
-
+//
 //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {
 //
