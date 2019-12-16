@@ -20,7 +20,7 @@ public class UserController {
     public ResponseEntity registerUser(@RequestBody final User user) {
         ResponseEntity response;
         try {
-            response = ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
+            response = ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
         } catch (DuplicateUserException e) {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
