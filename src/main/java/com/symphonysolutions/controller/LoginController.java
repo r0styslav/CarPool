@@ -1,68 +1,47 @@
 package com.symphonysolutions.controller;
 
+import com.symphonysolutions.exception.DuplicateUserException;
+import com.symphonysolutions.model.User;
 import com.symphonysolutions.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class LoginController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
-    public ModelAndView login(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
-        return modelAndView;
+    @PostMapping(value = "/login")
+    public ResponseEntity login(@RequestBody final User user) {
+        ResponseEntity response;
+        User savedUser = userService.findUserByEmail(user.getEmail());
+        if (savedUser != null) {
+            if (savedUser.getPassword().equals(user.getPassword()))
+                response = ResponseEntity.status(HttpStatus.OK).body(savedUser);
+            else {
+                response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+        }
+        else {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        return response;
     }
 
-
-//    @RequestMapping(value="/registration", method = RequestMethod.GET)
-//    public ModelAndView registration() {
-//        ModelAndView modelAndView = new ModelAndView();
-//        User user = new User();
-//        modelAndView.addObject("user", user);
-//        modelAndView.setViewName("registration");
-//        return modelAndView;
-//    }
-//
-//    @RequestMapping(value = "/registration", method = RequestMethod.POST)
-//    public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
-//        ModelAndView modelAndView = new ModelAndView();
-//        User userExists = userService.findUserByEmail(user.getEmail());
-//        if (userExists != null) {
-//            bindingResult
-//                    .rejectValue("email", "error.user",
-//                            "There is already a user registered with the email provided");
-//        }
-//        if (bindingResult.hasErrors()) {
-//            modelAndView.setViewName("registration");
-//        } else {
-//            try {
-//                userService.saveUser(user);
-//            } catch (DuplicateUserException e) {
-//                e.printStackTrace();
-//            }
-//            modelAndView.addObject("successMessage", "User has been registered successfully");
-//            modelAndView.addObject("user", new User());
-//            modelAndView.setViewName("registration");
-//
-//        }
-//        return modelAndView;
-//    }
-//
-//    @RequestMapping(value="/admin/home", method = RequestMethod.GET)
-//    public ModelAndView home(){
-//        ModelAndView modelAndView = new ModelAndView();
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        User user = userService.findUserByEmail(auth.getName());
-//        modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-//        modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
-//        modelAndView.setViewName("admin/home");
-//        return modelAndView;
-//    }
+    @PostMapping(value = "/register")
+    public ResponseEntity addUser(@RequestBody final User user) {
+        ResponseEntity response;
+        try {
+            response = ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
+        } catch (DuplicateUserException e) {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return response;
+    }
 }

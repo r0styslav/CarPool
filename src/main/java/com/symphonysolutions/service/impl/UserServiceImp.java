@@ -5,6 +5,7 @@ import com.symphonysolutions.repository.RolerRepository;
 import com.symphonysolutions.repository.UserRepository;
 import com.symphonysolutions.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +21,12 @@ public class UserServiceImp implements UserService {
     @Autowired
     private RolerRepository roleRepository;
 
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public User saveUser(User user) {
-//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//        user.setActive(1);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 //        Role userRole = roleRepository.findByRole("ADMIN");
 //        user.setRoles(new HashSet<>(Arrays.asList(userRole)));
         return userRepository.save(user);

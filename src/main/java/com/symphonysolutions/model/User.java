@@ -24,9 +24,6 @@ public class User {
     @Column(name = "last_name")
     @NotEmpty(message = "*Please provide your last name")
     private String lastName;
-    private String loginName;
-    @Column(name = "active")
-    private int active;
     //bc crypt hash
     @Column(name = "password")
     @NotEmpty(message = "*Please provide your password")
@@ -39,4 +36,5 @@ public class User {
             joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="role_id", referencedColumnName="id")})
     private Set<Role> roles;
+
 }
